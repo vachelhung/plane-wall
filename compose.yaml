@@ -1,0 +1,41 @@
+name: plane-wall
+
+services:
+  plane-wall:
+    build: .
+    image: plane-wall:local
+    container_name: plane-wall
+    restart: unless-stopped
+    user: "${WALL_UID:-1000}:${WALL_GID:-1000}"   # 要與 secrets/ 檔案擁有者相同(檔案權限 600)
+    environment:
+      DB_HOST: ${PLANE_DB_HOST:-plane-db}          # Plane compose 的資料庫服務名稱
+      DB_USER: wall_reader
+      PLANE_API_URL: ${PLANE_API_URL:-http://api:8000}
+      WALL_DAYS: "${WALL_DAYS:-7}"
+      WALL_LIMIT: "${WALL_LIMIT:-100}"
+    secrets:
+      - db_password
+      - db_name
+    networks:
+      - plane
+    ports:
+      - "127.0.0.1:${WALL_PORT:-8090}:8080"       # 只綁本機,由反向代理把 /wall/ 轉過來;不要改成 0.0.0.0
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/wall/healthz', timeout=5)"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+secrets:
+  db_password:
+    file: ./secrets/db_password
+  db_name:
+    file: ./secrets/db_name
+
+networks:
+  plane:
+    external: true
+    name: ${PLANE_NETWORK:-plane-app_default}     # Plane 官方 setup.sh 安裝時的預設網路名稱
