@@ -75,9 +75,10 @@ curl -s http://127.0.0.1:8090/wall/healthz   # 應回 ok
 DROP OWNED BY wall_reader; DROP ROLE wall_reader;
 ```
 
-## 致謝
+## 作者
 
-訊息牆的構想來自一位同事分享的其他專案管理軟體使用經驗,特別是訊息牆的用法與好處。
+- [vachelhung](https://github.com/vachelhung)
+- [Jhih-Hao Hsu](https://github.com/scl00082) — 貢獻 Plane 的架設與使用經驗;訊息牆的構想來自他分享的其他專案管理軟體使用經驗,特別是訊息牆的用法與好處。
 
 ## 授權
 
