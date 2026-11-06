@@ -1,6 +1,6 @@
-FROM python:3.12.7-slim
+FROM python:3.12.16-slim
 
-RUN pip install --no-cache-dir "psycopg[binary]==3.2.3"
+RUN pip install --no-cache-dir "psycopg[binary]==3.2.13"
 
 WORKDIR /app
 COPY app.py .
